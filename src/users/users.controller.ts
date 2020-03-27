@@ -16,6 +16,10 @@ import { PasswordValidationPipe } from './pipes/passwordValidation.pipe';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  /**
+   * Create a new user
+   * @param createUserDto user object from the client
+   */
   @Post()
   @UsePipes(ValidationPipe)
   @UsePipes(PasswordValidationPipe)
@@ -24,7 +28,7 @@ export class UsersController {
   }
 
   /**
-   * Retrieves an user information by a given id
+   * Retrieve an user information by a given id
    * @param id userId
    */
   @Get('/:id')
