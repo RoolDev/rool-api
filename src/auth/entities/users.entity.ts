@@ -40,4 +40,8 @@ export class Users extends BaseEntity {
   validatePassword(password: string) {
     return this.password === password;
   }
+
+  get isAdmin() {
+    return this.rank >= 5;
+  }
 }

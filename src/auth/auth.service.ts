@@ -34,6 +34,7 @@ export class AuthService {
       rank,
       // eslint-disable-next-line @typescript-eslint/camelcase
       account_created,
+      isAdmin,
     } = await this.authRepository.signInUser(signInUserDTO);
 
     const payload: IJwtPayload = {
@@ -41,7 +42,7 @@ export class AuthService {
       mail,
       rank,
       namedRank: IUserRanks[rank],
-      isAdmin: rank > 5,
+      isAdmin,
       // eslint-disable-next-line @typescript-eslint/camelcase
       account_created,
     };
