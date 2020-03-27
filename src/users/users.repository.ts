@@ -4,6 +4,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 import * as uuid from 'uuid';
 import { IUserCreateConfirmation } from './models/IUserCreateConfirmation';
+import {
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 @EntityRepository(Users)
 export class UsersRepository extends Repository<Users> {
@@ -30,12 +34,20 @@ export class UsersRepository extends Repository<Users> {
     user.auth_ticket = uuid.v4();
 
     // Save the user into the database
-    const newUser = await user.save();
+    try {
+      const newUser = await user.save();
 
-    return {
-      id: newUser.id,
-      username,
-      message: `Usuário criado com sucesso.`,
-    };
+      return {
+        id: newUser.id,
+        username,
+        message: `Usuário criado com sucesso.`,
+      };
+    } catch (e) {
+      if (e.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException('Nome ou e-mail já cadastrados.');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 }

@@ -4,7 +4,6 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  UsePipes,
   ValidationPipe,
   Body,
 } from '@nestjs/common';
@@ -21,9 +20,9 @@ export class UsersController {
    * @param createUserDto user object from the client
    */
   @Post()
-  @UsePipes(ValidationPipe)
-  @UsePipes(PasswordValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(
+    @Body(ValidationPipe, PasswordValidationPipe) createUserDto: CreateUserDto,
+  ) {
     return await this.usersService.createUser(createUserDto);
   }
 
