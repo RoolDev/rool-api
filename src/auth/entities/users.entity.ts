@@ -5,6 +5,7 @@ import {
   Entity,
   Unique,
 } from 'typeorm';
+import { IUserRanks } from '../models/IUserRanks';
 
 @Entity()
 @Unique(['username', 'mail'])
@@ -22,6 +23,9 @@ export class Users extends BaseEntity {
   mail: string;
 
   @Column()
+  rank: IUserRanks;
+
+  @Column()
   account_created: number;
 
   @Column()
@@ -32,4 +36,8 @@ export class Users extends BaseEntity {
 
   @Column()
   ip_current: string;
+
+  validatePassword(password: string) {
+    return this.password === password;
+  }
 }

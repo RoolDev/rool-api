@@ -1,13 +1,17 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { Users } from './entities/create-user.entity';
+import { Users } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
-import * as uuid from 'uuid';
 import { IUserCreateConfirmation } from '../auth/models/IUserCreateConfirmation';
 import {
   ConflictException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
+
+import * as uuid from 'uuid';
+import * as crypto from 'crypto';
+import { SignInUserDTO } from './dto/signin-user.dto';
 
 @EntityRepository(Users)
 export class AuthRepository extends Repository<Users> {
@@ -19,7 +23,7 @@ export class AuthRepository extends Repository<Users> {
     const user = new Users();
     user.username = username;
     user.mail = mail;
-    user.password = password;
+    user.password = this.saltPassword(password);
 
     // eslint-disable-next-line @typescript-eslint/camelcase
     user.ip_current = ip;
@@ -35,10 +39,10 @@ export class AuthRepository extends Repository<Users> {
 
     // Save the user into the database
     try {
-      const newUser = await user.save();
+      const { id } = await user.save();
 
       return {
-        id: newUser.id,
+        id,
         username,
         message: `Usuário criado com sucesso.`,
       };
@@ -49,5 +53,24 @@ export class AuthRepository extends Repository<Users> {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  async signInUser(signInUserDto: SignInUserDTO): Promise<Users> {
+    const { username, password } = signInUserDto;
+
+    const saltedPassword = this.saltPassword(password);
+
+    const user = await this.findOne({ username });
+
+    if (user && user.validatePassword(saltedPassword)) {
+      return user;
+    } else {
+      throw new UnauthorizedException('Credenciais inválidas.');
+    }
+  }
+
+  saltPassword(password: string) {
+    const hash = crypto.createHash('sha512');
+    return hash.update(password, 'utf8').digest('hex');
   }
 }
