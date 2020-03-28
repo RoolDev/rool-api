@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, BadRequestException, Logger } from '@nestjs/common';
-import { AppModule } from './app.module';
-import { ValidationError } from 'class-validator';
 
+import { ValidationError } from 'class-validator';
 import dotenvFlow = require('dotenv-flow');
+
+import * as rateLimit from 'express-rate-limit';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
@@ -27,6 +29,14 @@ async function bootstrap() {
     app.enableCors();
   } else {
     app.enableCors({ origin: 'https://habborool.org' });
+
+    // Added rate
+    app.use(
+      rateLimit({
+        windowMs: 10 * 60 * 1000, // 10 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+      }),
+    );
 
     logger.log(`Accepting requests from origin "habborool.org"`);
   }
