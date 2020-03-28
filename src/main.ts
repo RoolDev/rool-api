@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, BadRequestException, Logger } from '@nestjs/common';
 
 import { ValidationError } from 'class-validator';
@@ -12,7 +13,7 @@ async function bootstrap() {
 
   dotenvFlow.config();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Override ValidationPipe
   app.useGlobalPipes(
@@ -37,6 +38,9 @@ async function bootstrap() {
         max: 100, // limit each IP to 100 requests per windowMs
       }),
     );
+
+    // Enable proxy
+    app.set('trust proxy', 1);
 
     logger.log(`Accepting requests from origin "habborool.org"`);
   }
