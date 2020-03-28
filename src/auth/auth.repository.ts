@@ -62,11 +62,11 @@ export class AuthRepository extends Repository<Users> {
   }
 
   async signInUser(signInUserDto: SignInUserDTO): Promise<Users> {
-    const { username, password } = signInUserDto;
+    const { mail, password } = signInUserDto;
 
     const saltedPassword = this.saltPassword(password);
 
-    const user = await this.findOne({ username });
+    const user = await this.findOne({ mail });
 
     if (user && user.validatePassword(saltedPassword)) {
       return user;

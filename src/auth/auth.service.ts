@@ -40,9 +40,10 @@ export class AuthService {
   }
 
   async signInUser(signInUserDTO: SignInUserDTO): Promise<IUserSignInToken> {
-    this.logger.log(`Trying to sign in user: '${signInUserDTO.username}'.`);
+    this.logger.log(`Trying to sign in user: '${signInUserDTO.mail}'.`);
 
     const {
+      id,
       username,
       mail,
       rank,
@@ -52,6 +53,7 @@ export class AuthService {
     } = await this.authRepository.signInUser(signInUserDTO);
 
     const payload: IJwtPayload = {
+      id,
       username,
       mail,
       rank,
