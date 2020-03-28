@@ -1,11 +1,22 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
+import { ConfigModule, ConfigService } from 'nestjs-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config } from './config/mysql.config';
+
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+
+import * as path from 'path';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(config), AuthModule, UsersModule],
+  imports: [
+    ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => config.get('mysql'),
+      inject: [ConfigService],
+    }),
+    AuthModule,
+    UsersModule,
+  ],
   controllers: [],
   providers: [],
 })
