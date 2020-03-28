@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IUserCreateConfirmation } from './models/IUserCreateConfirmation';
 import { AuthRepository } from './auth.repository';
@@ -15,6 +15,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  private logger: Logger = new Logger('AuthService');
+
   /**
    * Create a new user into the database
    * @param createUserDto User DTO
@@ -23,11 +25,21 @@ export class AuthService {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<IUserCreateConfirmation> {
+    this.logger.log(
+      `Creating new user '${createUserDto.username}' with ip '${createUserDto.ip}'`,
+    );
+
     const newUser = await this.authRepository.createUser(createUserDto);
+
+    this.logger.log(
+      `User '${createUserDto.username} (${createUserDto.mail})' have been created.`,
+    );
     return newUser;
   }
 
   async signInUser(signInUserDTO: SignInUserDTO): Promise<IUserSignInToken> {
+    this.logger.log(`Trying to sign in user: '${signInUserDTO.username}'.`);
+
     const {
       username,
       mail,
@@ -48,6 +60,8 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload);
+
+    this.logger.log(`User '${username} (${mail})' signed in.`);
 
     return {
       accessToken,

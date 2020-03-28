@@ -7,16 +7,14 @@ import { AuthRepository } from './auth.repository';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { ConfigService } from 'nestjs-config';
 
-// TODO: Set jwt-secret via env var
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: {
-        expiresIn: process.env.JWT_EXPIRE,
-      },
+    JwtModule.registerAsync({
+      useFactory: (config: ConfigService) => config.get('jwt'),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([AuthRepository]),
   ],

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PasswordValidationPipe } from './pipes/passwordValidation.pipe';
 import { AuthService } from './auth.service';
@@ -7,6 +7,8 @@ import { SignInUserDTO } from './dto/signin-user.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  private logger: Logger = new Logger('AuthController');
 
   /**
    * Create a new user

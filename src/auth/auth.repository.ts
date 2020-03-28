@@ -7,6 +7,7 @@ import {
   ConflictException,
   InternalServerErrorException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 
 import * as uuid from 'uuid';
@@ -15,6 +16,8 @@ import { SignInUserDTO } from './dto/signin-user.dto';
 
 @EntityRepository(Users)
 export class AuthRepository extends Repository<Users> {
+  private logger: Logger = new Logger('AuthRepository');
+
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<IUserCreateConfirmation> {
@@ -48,6 +51,9 @@ export class AuthRepository extends Repository<Users> {
       };
     } catch (e) {
       if (e.code === 'ER_DUP_ENTRY') {
+        this.logger.log(
+          `Username or e-mail already exist. ${user.username} (${user.mail})`,
+        );
         throw new ConflictException('Nome ou e-mail já cadastrados.');
       } else {
         throw new InternalServerErrorException();
@@ -65,6 +71,7 @@ export class AuthRepository extends Repository<Users> {
     if (user && user.validatePassword(saltedPassword)) {
       return user;
     } else {
+      this.logger.error(`Invalid credentials for user ${user.username}`);
       throw new UnauthorizedException('Credenciais inválidas.');
     }
   }
