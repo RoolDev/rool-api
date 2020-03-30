@@ -12,4 +12,19 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   motto: string;
+
+  @Column()
+  auth_ticket: string;
+
+  @Column()
+  ip_current: string;
+
+  @Column()
+  credits: number;
+
+  @Column()
+  pixels: number;
+
+  @Column()
+  points: number;
 }

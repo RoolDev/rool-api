@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
+import { CreateUserSSO } from './dto/create-user-sso.dto';
+import { Users } from 'src/auth/entities/users.entity';
+import * as uuid from 'uuid';
+import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +32,36 @@ export class UsersService {
     this.logger.log(`Found user ${found.username} (${found.id}).`);
 
     return found;
+  }
+
+  /**
+   *
+   */
+  async updateUserSSO(
+    userDTO: Users,
+    createUserSSO: CreateUserSSO,
+  ): Promise<IUpdateUserSSO> {
+    const { ip } = createUserSSO;
+
+    this.logger.log(
+      `Creating SSO ticket for user ${userDTO.username} (${userDTO.mail}) ip ${ip}`,
+    );
+
+    const user = await this.getUserById(userDTO.id);
+    const sso = uuid.v4();
+
+    user.auth_ticket = sso;
+    user.ip_current = ip;
+
+    await user.save();
+
+    this.logger.log(
+      `Updated SSO ticket for user ${userDTO.username} (${userDTO.mail}) ip ${ip}`,
+    );
+
+    return {
+      auth_ticket: sso,
+    };
   }
 
   /**

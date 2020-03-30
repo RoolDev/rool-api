@@ -71,6 +71,7 @@ export class AuthService {
       // eslint-disable-next-line @typescript-eslint/camelcase
       account_created,
       isAdmin,
+      auth_ticket,
     } = user;
 
     return {
