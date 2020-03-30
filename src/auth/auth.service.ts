@@ -9,7 +9,8 @@ import { IJwtPayload } from './models/IJwtPayload';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/users.entity';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
-
+import axios from 'axios';
+import { Request } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
@@ -107,5 +108,12 @@ export class AuthService {
       this.logger.log(`Invalid token ${token.accessToken}`);
       throw new BadRequestException('Invalid token');
     }
+  }
+
+  async getIP(request: Request) {
+    const ip =
+      request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+
+    return { ip };
   }
 }

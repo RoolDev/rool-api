@@ -40,14 +40,14 @@ async function bootstrap() {
       }),
     );
 
-    // Enable proxy
-    app.set('trust proxy', 1);
-
     logger.log(`Accepting requests from origin "habborool.org"`);
   }
 
+  // Enable proxy
+  app.set('trust proxy', true);
+
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`Application listening on port ${port}`);
 }

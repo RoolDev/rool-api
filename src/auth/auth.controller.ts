@@ -1,8 +1,17 @@
-import { Controller, Post, Body, ValidationPipe, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Logger,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { SignInUserDTO } from './dto/signin-user.dto';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -27,5 +36,10 @@ export class AuthController {
   @Post('validate')
   async validateToken(@Body() token: ValidateTokenDTO) {
     return this.authService.validateJWT(token);
+  }
+
+  @Get('ip')
+  async getIp(@Req() request: Request) {
+    return this.authService.getIP(request);
   }
 }
