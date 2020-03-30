@@ -1,7 +1,15 @@
-import { Controller, Post, Body, ValidationPipe, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Logger,
+  Get,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { SignInUserDTO } from './dto/signin-user.dto';
+import { ValidateTokenDTO } from './dto/validate-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,5 +29,10 @@ export class AuthController {
   @Post('signin')
   async signInUser(@Body(ValidationPipe) signInUserDTO: SignInUserDTO) {
     return this.authService.signInUser(signInUserDTO);
+  }
+
+  @Get('validate')
+  async validateToken(@Body() token: ValidateTokenDTO) {
+    return this.authService.validateJWT(token);
   }
 }

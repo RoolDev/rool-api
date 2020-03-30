@@ -80,4 +80,10 @@ export class AuthRepository extends Repository<Users> {
     const hash = crypto.createHash('sha512');
     return hash.update(password, 'utf8').digest('hex');
   }
+
+  async getUser(id: number): Promise<Users> {
+    const user = await this.findOne({ id });
+
+    return user;
+  }
 }
