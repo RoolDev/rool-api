@@ -6,6 +6,7 @@ import { ValidationError } from 'class-validator';
 import dotenvFlow = require('dotenv-flow');
 
 import * as rateLimit from 'express-rate-limit';
+import * as cors from 'cors';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -29,7 +30,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
-    app.enableCors();
+    app.use(cors());
 
     // Added rate
     app.use(
