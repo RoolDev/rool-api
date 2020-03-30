@@ -2,7 +2,6 @@ import {
   IsNotEmpty,
   IsEmail,
   Length,
-  IsIP,
   IsString,
   Matches,
   MaxLength,
@@ -46,8 +45,7 @@ export class CreateUserDto {
   @CompareClassProperties('password', { message: 'Senhas não se coincidem.' })
   passwordConfirmation: string;
 
-  @IsIP(4, {
-    message: 'IP inválido.',
-  })
+  @IsNotEmpty()
+  @IsString()
   ip: string;
 }

@@ -1,6 +1,7 @@
-import { IsIP } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateUserSSO {
-  @IsIP(4)
+  @IsString()
+  @IsNotEmpty()
   ip: string;
 }
