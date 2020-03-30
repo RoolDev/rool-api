@@ -5,6 +5,7 @@ import {
   IsIP,
   IsString,
   Matches,
+  MaxLength,
 } from 'class-validator';
 
 import { CompareClassProperties } from '../decorators/compare-class-properties.decorator';
@@ -26,6 +27,9 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: 'Seu e-mail não pode estar vazio.' })
   @IsEmail({}, { message: 'Seu e-mail não é válido' })
+  @MaxLength(25, {
+    message: 'E-mail não pode conter mais que 25 caracteres.',
+  })
   mail: string;
 
   @IsString()
@@ -40,7 +44,7 @@ export class CreateUserDto {
       'A confirmação da senha deve ter no mínimo 6 caracteres e no máximo 30.',
   })
   @CompareClassProperties('password', { message: 'Senhas não se coincidem.' })
-  confirmationPassword: string;
+  passwordConfirmation: string;
 
   @IsIP(4, {
     message: 'IP inválido.',

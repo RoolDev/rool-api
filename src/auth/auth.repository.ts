@@ -54,6 +54,7 @@ export class AuthRepository extends Repository<Users> {
         this.logger.log(
           `Username or e-mail already exist. ${user.username} (${user.mail})`,
         );
+
         throw new ConflictException('Nome ou e-mail já cadastrados.');
       } else {
         throw new InternalServerErrorException();
