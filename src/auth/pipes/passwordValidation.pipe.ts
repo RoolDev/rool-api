@@ -4,7 +4,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 @Injectable()
 export class PasswordValidationPipe implements PipeTransform {
   transform(value: CreateUserDto) {
-    const { password, confirmationPassword } = value;
+    const { password, passwordConfirmation: confirmationPassword } = value;
 
     if (confirmationPassword !== password) {
       throw new BadRequestException(`As senhas não se coincidem.`);

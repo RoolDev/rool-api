@@ -8,7 +8,7 @@ import {
 import { IUserRanks } from '../models/IUserRanks';
 
 @Entity()
-@Unique(['username', 'mail'])
+@Unique('users', ['username', 'mail'])
 export class Users extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
