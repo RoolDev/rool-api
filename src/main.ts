@@ -29,7 +29,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
-    app.enableCors({ origin: 'https://habborool.org' });
+    app.enableCors({ origin: 'https://dev.habborool.org' });
 
     // Added rate
     app.use(
