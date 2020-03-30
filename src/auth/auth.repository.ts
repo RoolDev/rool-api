@@ -55,7 +55,17 @@ export class AuthRepository extends Repository<Users> {
           `Username or e-mail already exist. ${user.username} (${user.mail})`,
         );
 
-        throw new ConflictException('Nome ou e-mail já cadastrados.');
+        throw new ConflictException(
+          [
+            {
+              property: 'username',
+            },
+            {
+              property: 'mail',
+            },
+          ],
+          'Usuário ou e-mail já utilizados.',
+        );
       } else {
         throw new InternalServerErrorException();
       }
@@ -73,7 +83,17 @@ export class AuthRepository extends Repository<Users> {
       return user;
     } else {
       this.logger.error(`Invalid credentials for user ${user.username}`);
-      throw new UnauthorizedException('Credenciais inválidas.');
+      throw new UnauthorizedException(
+        [
+          {
+            property: 'mail',
+          },
+          {
+            property: 'password',
+          },
+        ],
+        'Credenciais inválidas.',
+      );
     }
   }
 
