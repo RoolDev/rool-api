@@ -34,13 +34,14 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
+    app.enableCors();
     app.use(cors());
 
     // Added rate
     app.use(
       rateLimit({
-        windowMs: 10 * 60 * 1000, // 10 minutes
-        max: 100, // limit each IP to 100 requests per windowMs
+        windowMs: 60 * 60 * 1000, // 1 hour
+        max: 1000, // limit each IP to 100 requests per windowMs
         keyGenerator: (req: Request) => {
           return req.headers['cf-connecting-ip'] || req.ip;
         },
