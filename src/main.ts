@@ -34,7 +34,9 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
-    app.enableCors();
+    app.enableCors({
+      origin: true,
+    });
     app.use(cors());
 
     // Added rate
