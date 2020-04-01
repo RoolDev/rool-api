@@ -6,7 +6,6 @@ import { ValidationError } from 'class-validator';
 import dotenvFlow = require('dotenv-flow');
 
 import * as rateLimit from 'express-rate-limit';
-import * as cors from 'cors';
 import { AppModule } from './app.module';
 import { Request } from 'express';
 
@@ -35,9 +34,15 @@ async function bootstrap() {
     app.enableCors();
   } else {
     app.enableCors({
-      origin: true,
+      origin: [/^(.*)/],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      preflightContinue: false,
+      optionsSuccessStatus: 200,
+      credentials: true,
+      allowedHeaders:
+        'Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
     });
-    app.use(cors());
+    // app.use(cors());
 
     // Added rate
     app.use(
