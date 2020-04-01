@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  UseInterceptors,
+  CacheInterceptor,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
@@ -9,6 +15,7 @@ import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 
 @Injectable()
+@UseInterceptors(CacheInterceptor)
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
@@ -86,5 +93,13 @@ export class UsersService {
       .getManyAndCount();
 
     return result[1] > 0;
+  }
+
+  async getUsersOnline(): Promise<{ usersOnline: number }> {
+    const total = await this.usersRepository.findAndCount({ online: '1' });
+
+    return {
+      usersOnline: total[1],
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from 'nestjs-config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -14,6 +14,7 @@ import * as path from 'path';
       useFactory: (config: ConfigService) => config.get('mysql'),
       inject: [ConfigService],
     }),
+    CacheModule.register(),
     AuthModule,
     UsersModule,
   ],

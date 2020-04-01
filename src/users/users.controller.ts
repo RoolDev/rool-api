@@ -8,6 +8,8 @@ import {
   Post,
   Body,
   ValidationPipe,
+  CacheKey,
+  CacheTTL,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -18,6 +20,13 @@ import { CreateUserSSO } from './dto/create-user-sso.dto';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @Get('/')
+  @CacheKey('users_online')
+  @CacheTTL(120)
+  async getUsersOnline() {
+    return this.usersService.getUsersOnline();
+  }
 
   /**
    * Retrieve an user information by a given id

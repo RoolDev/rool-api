@@ -12,4 +12,5 @@ export default {
   type: 'mysql',
   retryAttempts: 10,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  cache: true,
 } as TypeOrmModuleOptions;

@@ -27,4 +27,7 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   points: number;
+
+  @Column()
+  online: '0' | '1';
 }
