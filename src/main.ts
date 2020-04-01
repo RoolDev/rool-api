@@ -8,6 +8,7 @@ import dotenvFlow = require('dotenv-flow');
 import * as rateLimit from 'express-rate-limit';
 import * as cors from 'cors';
 import { AppModule } from './app.module';
+import { Request } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
@@ -15,6 +16,9 @@ async function bootstrap() {
   dotenvFlow.config();
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Enable proxy
+  app.set('trust proxy', true);
 
   // Override ValidationPipe
   app.useGlobalPipes(
@@ -37,14 +41,14 @@ async function bootstrap() {
       rateLimit({
         windowMs: 10 * 60 * 1000, // 10 minutes
         max: 100, // limit each IP to 100 requests per windowMs
+        keyGenerator: (req: Request) => {
+          return req.headers['cf-connecting-ip'] || req.ip;
+        },
       }),
     );
 
     logger.log(`Accepting requests from origin "habborool.org"`);
   }
-
-  // Enable proxy
-  app.set('trust proxy', true);
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
