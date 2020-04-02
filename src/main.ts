@@ -6,7 +6,6 @@ import { ValidationError } from 'class-validator';
 import dotenvFlow = require('dotenv-flow');
 
 import * as rateLimit from 'express-rate-limit';
-import * as cors from 'cors';
 import { AppModule } from './app.module';
 import { Request } from 'express';
 
@@ -14,6 +13,9 @@ async function bootstrap() {
   const logger = new Logger('bootstrap');
 
   dotenvFlow.config();
+
+  if (!process.env.RE_SECRET)
+    throw new Error('API will not work if there is no RE_SECRET env var.');
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
