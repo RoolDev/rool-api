@@ -9,4 +9,8 @@ export class SignInUserDTO {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  recaptchaToken: string;
 }

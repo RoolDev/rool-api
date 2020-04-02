@@ -48,4 +48,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   ip: string;
+
+  @IsNotEmpty()
+  @IsString()
+  recaptchaToken: string;
 }

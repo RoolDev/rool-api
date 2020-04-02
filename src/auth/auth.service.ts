@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthRepository } from './auth.repository';
@@ -9,8 +10,9 @@ import { IJwtPayload } from './models/IJwtPayload';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/users.entity';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
-import axios from 'axios';
 import { Request } from 'express';
+import axios from 'axios';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,6 +31,9 @@ export class AuthService {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ accessToken: string }> {
+    // Validating recaptcha request
+    await this.validateRecaptchaToken(createUserDto.recaptchaToken);
+
     this.logger.log(
       `Creating new user '${createUserDto.username}' with ip '${createUserDto.ip}'`,
     );
@@ -49,6 +54,9 @@ export class AuthService {
   }
 
   async signInUser(signInUserDTO: SignInUserDTO): Promise<IUserSignInToken> {
+    // Validate recaptcha token
+    await this.validateRecaptchaToken(signInUserDTO.recaptchaToken);
+
     this.logger.log(`Trying to sign in user: '${signInUserDTO.mail}'.`);
 
     const user = await this.authRepository.signInUser(signInUserDTO);
@@ -64,16 +72,7 @@ export class AuthService {
   }
 
   async generateJWTPayload(user: Users): Promise<IJwtPayload> {
-    const {
-      id,
-      username,
-      mail,
-      rank,
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      account_created,
-      isAdmin,
-      auth_ticket,
-    } = user;
+    const { id, username, mail, rank, account_created, isAdmin } = user;
 
     return {
       id,
@@ -82,7 +81,6 @@ export class AuthService {
       rank,
       namedRank: IUserRanks[rank],
       isAdmin,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       account_created,
     };
   }
@@ -115,5 +113,18 @@ export class AuthService {
       request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
     return { ip };
+  }
+
+  async validateRecaptchaToken(token: string): Promise<boolean> {
+    this.logger.log(`Validating reCaptcha token ${token}`);
+
+    const { RE_SECRET } = process.env;
+
+    await axios.get(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${RE_SECRET}&response=${token}`,
+    );
+
+    this.logger.log(`${token} is valid.`);
+    return true;
   }
 }
