@@ -85,5 +85,7 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": "dist/main.js",
+  "repository": "https://github.com/thereis/rool-api"
 }
