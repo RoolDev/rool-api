@@ -40,6 +40,8 @@ async function bootstrap() {
       origin: [
         'http://habborool.org',
         'https://habborool.org',
+        'https://dev.habborool.org',
+        'https://rool-dev.netlify.com',
         'http://localhost:3000',
         '*',
       ],
