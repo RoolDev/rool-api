@@ -28,6 +28,7 @@
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/typeorm": "^7.0.0",
+    "@sentry/node": "5.15.4",
     "@types/dotenv": "^8.2.0",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
@@ -85,5 +86,7 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": "dist/main.js",
+  "repository": "https://github.com/thereis/rool-api"
 }

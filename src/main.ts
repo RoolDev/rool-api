@@ -9,6 +9,9 @@ import * as rateLimit from 'express-rate-limit';
 import { AppModule } from './app.module';
 import { Request } from 'express';
 
+import * as Sentry from '@sentry/node';
+import { SentryInterceptor } from './interceptors/sentry.interceptor';
+
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
@@ -40,6 +43,8 @@ async function bootstrap() {
       origin: [
         'http://habborool.org',
         'https://habborool.org',
+        'https://dev.habborool.org',
+        'https://rool-dev.netlify.com',
         'http://localhost:3000',
         '*',
       ],
@@ -61,6 +66,13 @@ async function bootstrap() {
       }),
     );
 
+    app.useGlobalInterceptors(new SentryInterceptor());
+
+    Sentry.init({
+      dsn:
+        'https://01a3d95b13cc4bdcaa5f3fc9f1e69518@o375600.ingest.sentry.io/5195291',
+    });
+
     logger.log(`Accepting requests from origin "habborool.org"`);
   }
 
@@ -69,4 +81,5 @@ async function bootstrap() {
 
   logger.log(`Application listening on port ${port}`);
 }
+
 bootstrap();
