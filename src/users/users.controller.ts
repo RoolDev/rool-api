@@ -10,6 +10,8 @@ import {
   ValidationPipe,
   CacheKey,
   CacheTTL,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -34,6 +36,7 @@ export class UsersController {
    */
   @Get('/:id')
   @UseGuards(AuthGuard())
+  @UseInterceptors(ClassSerializerInterceptor)
   getUserById(@Param('id', ParseIntPipe) id: number, @GetUser() user: Users) {
     if (!user.isAdmin && id !== user.id) {
       throw new UnauthorizedException(

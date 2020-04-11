@@ -7,6 +7,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
+
 /**
  * Models
  */
@@ -17,6 +19,7 @@ import { UserEntity } from './user.entity';
 })
 export class UserCurrencyEntity extends BaseEntity {
   @PrimaryColumn()
+  @Exclude({ toPlainOnly: true })
   user_id: number;
 
   @PrimaryColumn({
