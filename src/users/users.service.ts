@@ -30,15 +30,15 @@ export class UsersService {
   async getUserById(id: number): Promise<UserEntity> {
     this.logger.log(`Searching for user with id ${id}...`);
 
-    const found = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id);
 
-    if (!found) {
+    if (!user) {
       throw new NotFoundException(`User not found with id ${id}`);
     }
 
-    this.logger.log(`Found user ${found.username} (${found.id}).`);
+    this.logger.log(`Found user ${user.username} (${user.id}).`);
 
-    return found;
+    return user;
   }
 
   /**

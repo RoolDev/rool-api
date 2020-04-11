@@ -11,6 +11,9 @@ export class UserEntity extends BaseEntity {
   username: string;
 
   @Column()
+  rank: number;
+
+  @Column()
   motto: string;
 
   @Column()
@@ -30,4 +33,7 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   online: '0' | '1';
+
+  @Column()
+  look: string;
 }
