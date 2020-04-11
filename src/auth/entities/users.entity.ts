@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { IUserRanks } from '../models/IUserRanks';
 
-@Entity()
-@Unique('users', ['username', 'mail'])
+@Entity({ name: 'users' })
+@Unique(['username', 'mail'])
 export class Users extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;

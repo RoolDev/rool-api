@@ -56,7 +56,7 @@ export class UsersService {
       `Creating SSO ticket for user ${userDTO.username} (${userDTO.mail}) ip ${ip}`,
     );
 
-    const user = await this.getUserById(userDTO.id);
+    const user = await this.usersRepository.findOne(userDTO.id);
     const sso = uuid.v4();
 
     user.auth_ticket = sso;
