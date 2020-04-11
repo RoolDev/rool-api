@@ -30,7 +30,9 @@ export class UsersService {
   async getUserById(id: number): Promise<UserEntity> {
     this.logger.log(`Searching for user with id ${id}...`);
 
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['currencies'],
+    });
 
     if (!user) {
       throw new NotFoundException(`User not found with id ${id}`);

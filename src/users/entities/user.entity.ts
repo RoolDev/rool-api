@@ -1,4 +1,16 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import {
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  OneToMany,
+} from 'typeorm';
+
+/**
+ * Models
+ */
+import { UserCurrencyEntity } from './user-currency.entity';
+import { UserBadgeEntity } from './user-badge.entity';
 
 @Entity({
   name: 'users',
@@ -36,4 +48,16 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   look: string;
+
+  @OneToMany(
+    () => UserCurrencyEntity,
+    entity => entity.user,
+  )
+  currencies: UserCurrencyEntity[];
+
+  @OneToMany(
+    () => UserBadgeEntity,
+    entity => entity.user,
+  )
+  badges: UserBadgeEntity[];
 }
