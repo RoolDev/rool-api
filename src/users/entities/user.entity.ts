@@ -49,6 +49,9 @@ export class UserEntity extends BaseEntity {
   @Column()
   look: string;
 
+  @Column()
+  last_online: number;
+
   @OneToMany(
     () => UserCurrencyEntity,
     entity => entity.user,

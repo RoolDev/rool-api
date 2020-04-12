@@ -22,9 +22,7 @@ export class UserCurrencyEntity extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   user_id: number;
 
-  @PrimaryColumn({
-    type: 'int',
-  })
+  @PrimaryColumn()
   type: number;
 
   @Column()
