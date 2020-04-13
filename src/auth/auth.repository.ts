@@ -82,7 +82,8 @@ export class AuthRepository extends Repository<Users> {
     if (user && user.validatePassword(saltedPassword)) {
       return user;
     } else {
-      this.logger.error(`Invalid credentials for user ${user.username}`);
+      this.logger.error(`Invalid credentials for user ${user.mail}`);
+
       throw new UnauthorizedException(
         [
           {
