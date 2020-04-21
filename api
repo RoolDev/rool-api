@@ -1,0 +1,13 @@
+
+server {
+    listen 80;
+
+    server_name api-dev.habborool.org;
+
+    access_log off;
+    error_log off;
+
+    location / {
+        proxy_pass         http://127.0.0.1:3300;
+    }
+}
