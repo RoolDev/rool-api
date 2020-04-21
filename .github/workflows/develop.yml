@@ -27,17 +27,44 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Uses the NodeJS actions
+      - uses: actions/setup-node@v1.1.0
+        with:
+          version: 12.x
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build NestJS application
+        run: npm run build
+
+      # Install dependencies
+      - name: Stop API
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEV }}
+          username: root
+          key: ${{secrets.DEPLOY_KEY_DEV}}
+          port: 22
+          script_stop: false
+          script: |
+            pm2 stop api
+
       # Deploy to VM
-      - name: VM deploy
+      - name: VM SYNC
         uses: Pendect/action-rsyncer@v1.1.0
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_DEV }}
         with:
           src: /
+          options: '--exclude /.git/ \
+          --exclude /.github/ \
+          --exclude /node_modules/ \'
           dest: root@${{ secrets.HOST_DEV }}:/root/rool-api/
 
       # Install dependencies
-      - name: Install node dependencies
+      - name: Install VM dependencies
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DEV }}
@@ -47,12 +74,10 @@ jobs:
           script_stop: false
           script: |
             cd /root/rool-api/
-            pm2 stop api
             yarn --ignore-engines
-            yarn build
 
       # Setup config and restart pm2 process
-      - name: Config API and restart
+      - name: Config and restart API
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DEV }}
