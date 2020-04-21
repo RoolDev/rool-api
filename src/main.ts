@@ -44,7 +44,7 @@ async function bootstrap() {
         'http://habborool.org',
         'https://habborool.org',
         'https://dev.habborool.org',
-        'https://rool-dev.netlify.com',
+        'https://rool-dev.netlify.app',
         'http://localhost:3000',
         '*',
       ],
