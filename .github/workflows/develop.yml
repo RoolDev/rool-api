@@ -58,9 +58,7 @@ jobs:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_DEV }}
         with:
           src: /
-          options: '--exclude /.git/ \
-          --exclude /.github/ \
-          --exclude /node_modules/ \'
+          options: "--exclude /.git/ --exclude /.github/ --exclude /node_modules/"
           dest: root@${{ secrets.HOST_DEV }}:/root/rool-api/
 
       # Install dependencies
