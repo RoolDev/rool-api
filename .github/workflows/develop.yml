@@ -94,10 +94,10 @@ jobs:
             echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" >> .env
             echo "PORT=${{ secrets.PORT_DEV }}" >> .env
             echo "DB_HOST=${{ secrets.DB_HOST_DEV }}" >> .env
-            echo "DB_USER=${{ secrets.DB_PORT_DEV }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_DATABASE_DEV }}" >> .env
-            echo "DB_DATABASE=${{ secrets.DB_USERNAME_DEV }}" >> .env
-            echo "DB_PORT=${{ secrets.DB_PASSWORD_DEV }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USERNAME_DEV }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }}" >> .env
+            echo "DB_DATABASE=${{ secrets.DB_DATABASE_DEV }}" >> .env
+            echo "DB_PORT=${{ secrets.DB_PORT_DEV }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET_DEV }}" >> .env
             echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE_DEV }}" >> .env
             echo "RE_SECRET=${{ secrets.RE_SECRET_DEV }}" >> .env
