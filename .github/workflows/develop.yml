@@ -1,0 +1,82 @@
+# This is a basic workflow to help you get started with Actions
+
+name: API dev environment
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [develop]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Notify build started
+        env:
+          DISCORD_WEBHOOK: ${{secrets.DISCORD_WEBHOOK_URL}}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "Uma nova build da **API dev** foi iniciada."
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Deploy to VM
+      - name: VM deploy
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_DEV }}
+        with:
+          src: /
+          dest: root@${{ secrets.HOST_DEV }}:/root/rool-api/
+
+      # Install dependencies
+      - name: Install node dependencies
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEV }}
+          username: root
+          key: ${{secrets.DEPLOY_KEY_DEV}}
+          port: 22
+          script_stop: false
+          script: |
+            cd /root/rool-api/
+            pm2 stop api
+            yarn --ignore-engines
+            yarn build
+
+      # Setup config and restart pm2 process
+      - name: Config API and restart
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEV }}
+          username: root
+          key: ${{ secrets.DEPLOY_KEY_DEV }}
+          port: 22
+          script_stop: true
+          script: |
+            cd /root/rool-api/
+            echo "NODE_ENV=${{ secrets.NODE_ENV_DEV }}" >> .env
+            echo "PORT=${{ secrets.PORT_DEV }}" >> .env
+            echo "DB_HOST=${{ secrets.DB_HOST_DEV }}" >> .env
+            echo "DB_USER=${{ secrets.DB_PORT_DEV }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_DATABASE_DEV }}" >> .env
+            echo "DB_DATABASE=${{ secrets.DB_USERNAME_DEV }}" >> .env
+            echo "DB_PORT=${{ secrets.DB_PASSWORD_DEV }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET_DEV }}" >> .env
+            echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE_DEV }}" >> .env
+            echo "RE_SECRET=${{ secrets.RE_SECRET_DEV }}" >> .env
+            pm2 restart api
+
+      - name: Notify build end
+        env:
+          DISCORD_WEBHOOK: https://discordapp.com/api/webhooks/700510117707382794/3cSoOtvJAvWeifHt-gYvQN0x4A4JclEEIPDhDmTmBYB-OKyMwQi9UetWTByz_nJqD4TG
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "A build do **emulator dev** foi finalizado."
