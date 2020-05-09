@@ -5,7 +5,7 @@ import {
   MaxLength
 } from 'class-validator';
 
-export class RecoverPassword {
+export class RecoverPasswordDTO {
   @IsNotEmpty({ message: 'Seu e-mail não pode estar vazio.' })
   @IsEmail({}, { message: 'Seu e-mail não é válido' })
   @IsString()

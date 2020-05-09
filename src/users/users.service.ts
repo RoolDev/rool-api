@@ -17,7 +17,7 @@ import { IjIJwtEmailPayload } from './models/IJwtEmailPayload';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
-import { RecoverPassword } from './dto/recover-dto';
+import { RecoverPasswordDTO } from './dto/recover-dto';
 import { ChangePasswordDTO } from './dto/change-password.dto'
 import recoverApi from '../config/api-recover-password';
 
@@ -107,7 +107,7 @@ export class UsersService {
   }
 
   async checkIfEmailExist(
-    recoverPassword: RecoverPassword,
+    recoverPassword: RecoverPasswordDTO,
   ){
 
     const mail = await this.usersRepository.getUserMail(recoverPassword.mail);
@@ -163,7 +163,7 @@ export class UsersService {
   }
 
   async recoverPassword(
-    recoverPassword: RecoverPassword,
+    recoverPassword: RecoverPasswordDTO,
     user: UserEntity,
   ){
     
