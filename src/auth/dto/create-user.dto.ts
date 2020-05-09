@@ -27,7 +27,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Seu e-mail não pode estar vazio.' })
   @IsEmail({}, { message: 'Seu e-mail não é válido' })
   @MaxLength(64, {
-    message: 'E-mail não pode conter mais que 25 caracteres.',
+    message: 'E-mail não pode conter mais que 64 caracteres.',
   })
   mail: string;
 

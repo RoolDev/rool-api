@@ -13,9 +13,9 @@ import * as crypto from 'crypto';
 @EntityRepository(UserEntity)
 export class UsersRepository extends Repository<UserEntity> {
   
-  async getUserMail(email: string): Promise<UserEntity> {
+  async getUserMail(mail: string): Promise<UserEntity> {
     try {
-      const user = await this.findOne({ mail: email });
+      const user = await this.findOne({ mail });
       return user;
 
     } catch (err){

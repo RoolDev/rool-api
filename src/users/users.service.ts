@@ -13,7 +13,7 @@ import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
 import { CreateUserSSO } from './dto/create-user-sso.dto';
 import { Users } from 'src/auth/entities/users.entity';
-import { IjIJwtEmailPayload } from './models/IJwtEmailPayload';
+import { IjIJwtEmailPayload } from './models/IJWTRecoverEmailPayload';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';

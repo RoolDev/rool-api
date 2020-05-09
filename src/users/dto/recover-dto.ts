@@ -10,7 +10,7 @@ export class RecoverPasswordDTO {
   @IsEmail({}, { message: 'Seu e-mail não é válido' })
   @IsString()
   @MaxLength(64, {
-    message: 'E-mail não pode conter mais que 25 caracteres.',
+    message: 'E-mail não pode conter mais que 64 caracteres.',
   })
   mail: string;
 }
