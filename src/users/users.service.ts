@@ -18,10 +18,9 @@ import { IjIJwtEmailPayload } from './models/IJwtEmailPayload';
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 import { RecoverPassword } from './dto/recover-dto';
-import { ChangePassword } from './dto/change-password.dto'
+import { ChangePasswordDTO } from './dto/change-password.dto'
 
-import apiKeys from '../config/apikeys';
-import api from '../config/api';
+import recover_email_api from '../config/api';
 
 @Injectable()
 @UseInterceptors(CacheInterceptor)
@@ -114,7 +113,7 @@ export class UsersService {
 
     const mail = await this.usersRepository.getUserMail(recoverPassword.mail);
 
-    if(mail == null){
+    if(mail === undefined){
       throw new NotFoundException('Não foi encontrado nenhum usuário com este email');
       return;
     }
@@ -171,14 +170,14 @@ export class UsersService {
     
     const payload = await this.generateJWTPayload(recoverPassword.mail);
     const token = await this.generateJWT(payload);
-
+    console.log('sevice recover', );
     const data = {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      service_id: `${apiKeys.SERVICE_ID}`,
+      service_id: process.env.RECOVER_SERVICE_SERVICE_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
-      template_id: `${apiKeys.TEMPLATE_ID}`,
+      template_id: process.env.RECOVER_SERVICE_TEMPLATE_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
-      user_id: `${apiKeys.USER_ID}`,
+      user_id: process.env.RECOVER_SERVICE_USER_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
       template_params: {
         username: user.username,
@@ -189,7 +188,7 @@ export class UsersService {
     };
 
     try {
-      await api.post('/send', data);
+      await recover_email_api.post('/send', data);
 
     } catch(err){
       throw new BadRequestException('Erro ao enviar e-mail. Verifique os dados e tente novamente!');
@@ -197,15 +196,15 @@ export class UsersService {
   }
 
   async changePassword(
-    changePassword: ChangePassword,
+    changePassword: ChangePasswordDTO,
   ){
 
-   const mail = await this.validateJWT(changePassword.token);
+   const payload = await this.validateJWT(changePassword.token);
 
    try {
-      await this.usersRepository.changePassword(changePassword, mail.mail);
+      await this.usersRepository.changePassword(changePassword, payload.mail);
       return {
-        message: `Senha para o email ${mail.mail}' alterada com sucesso!`
+        message: `Senha para o email ${payload.mail}' alterada com sucesso!`
       }
    } catch(err){
     throw new BadRequestException('Falha ao atualizar senha, tente novamente.');

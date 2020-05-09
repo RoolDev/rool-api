@@ -5,7 +5,7 @@ import {
 
 import { Repository, EntityRepository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
-import { ChangePassword } from './dto/change-password.dto';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 
 
 import * as crypto from 'crypto';
@@ -28,7 +28,7 @@ export class UsersRepository extends Repository<UserEntity> {
     return hash.update(password, 'utf8').digest('hex');
   }
 
-  async changePassword(payload: ChangePassword, mail: string):Promise<string> {
+  async changePassword(payload: ChangePasswordDTO, mail: string):Promise<string> {
     try {
       const user = await this.findOne({ mail });
       user.password = this.saltPassword(payload.password);

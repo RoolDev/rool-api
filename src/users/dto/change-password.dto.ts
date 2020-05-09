@@ -7,7 +7,7 @@ import {
 import { CompareClassProperties } from '../../auth/decorators/compare-class-properties.decorator';
 
 
-export class ChangePassword {
+export class ChangePasswordDTO {
   @IsString()
   @Length(6, 30, {
     message: 'A senha deve ter no mínimo 6 caracteres e no máximo 30.',

@@ -19,7 +19,7 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Users } from 'src/auth/entities/users.entity';
 import { CreateUserSSO } from './dto/create-user-sso.dto';
 import { RecoverPassword } from './dto/recover-dto';
-import { ChangePassword } from './dto/change-password.dto';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -71,7 +71,7 @@ export class UsersController {
   }
 
   @Post('/recover/changePassword')
-  async changePassword(@Body(ValidationPipe) changePassword: ChangePassword){
+  async changePassword(@Body(ValidationPipe) changePassword: ChangePasswordDTO){
     return this.usersService.changePassword(changePassword);
   }
 }
