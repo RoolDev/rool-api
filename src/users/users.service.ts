@@ -169,7 +169,6 @@ export class UsersService {
     
     const payload = await this.generateJWTPayload(recoverPassword.mail);
     const token = await this.generateJWT(payload);
-    console.log('sevice recover', );
     const data = {
       // eslint-disable-next-line @typescript-eslint/camelcase
       service_id: process.env.RECOVER_SERVICE_SERVICE_ID,
