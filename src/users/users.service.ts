@@ -13,7 +13,7 @@ import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
 import { CreateUserSSO } from './dto/create-user-sso.dto';
 import { Users } from 'src/auth/entities/users.entity';
-import { IjIJwtEmailPayload } from './models/IJWTRecoverEmailPayload';
+import { IJWTRecoverEmailPayload } from './models/IJWTRecoverEmailPayload';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
@@ -133,21 +133,21 @@ export class UsersService {
     };
   }
 
-  async generateJWTPayload(mail: string):Promise<IjIJwtEmailPayload>{
+  async generateJWTPayload(mail: string):Promise<IJWTRecoverEmailPayload>{
     return {
       mail,
     }
   }
 
-  async generateJWT(payload: IjIJwtEmailPayload){
+  async generateJWT(payload: IJWTRecoverEmailPayload){
     return this.jwtService.sign(payload);
   }
 
-  async validateJWT(token: string): Promise<IjIJwtEmailPayload> {
+  async validateJWT(token: string): Promise<IJWTRecoverEmailPayload> {
     try {
       this.logger.log(`Validating token ${token}`);
 
-      const decoded = await this.jwtService.verifyAsync<IjIJwtEmailPayload>(
+      const decoded = await this.jwtService.verifyAsync<IJWTRecoverEmailPayload>(
         token,
       );
 

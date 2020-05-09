@@ -1,3 +1,3 @@
-export interface IjIJwtEmailPayload {
+export interface IJWTRecoverEmailPayload {
   mail: string,
 }
