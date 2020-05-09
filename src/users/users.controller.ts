@@ -18,7 +18,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Users } from 'src/auth/entities/users.entity';
 import { CreateUserSSO } from './dto/create-user-sso.dto';
-
+import { RecoverPasswordDTO } from './dto/recover-dto';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -61,5 +62,16 @@ export class UsersController {
     }
 
     return this.usersService.updateUserSSO(user, createUserSSO);
+  }
+
+  @Post('/recover')
+  async recoverPassword(@Body(ValidationPipe) recoverPassword: RecoverPasswordDTO, ){
+    
+    return this.usersService.checkIfEmailExist(recoverPassword);
+  }
+
+  @Post('/recover/changePassword')
+  async changePassword(@Body(ValidationPipe) changePassword: ChangePasswordDTO){
+    return this.usersService.changePassword(changePassword);
   }
 }
