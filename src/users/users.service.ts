@@ -19,7 +19,7 @@ import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 import { RecoverPassword } from './dto/recover-dto';
 import { ChangePasswordDTO } from './dto/change-password.dto'
-import recover_email_api from '../config/api-recover-password';
+import recoverApi from '../config/api-recover-password';
 
 @Injectable()
 @UseInterceptors(CacheInterceptor)
@@ -186,7 +186,7 @@ export class UsersService {
     };
 
     try {
-      await recover_email_api.post('/send', data);
+      await recoverApi.post('/send', data);
 
     } catch(err){
       throw new BadRequestException('Erro ao enviar e-mail. Verifique os dados e tente novamente!');
