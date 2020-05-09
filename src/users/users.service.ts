@@ -19,8 +19,7 @@ import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 import { RecoverPassword } from './dto/recover-dto';
 import { ChangePasswordDTO } from './dto/change-password.dto'
-
-import recover_email_api from '../config/api';
+import recover_email_api from '../config/api-recover-password';
 
 @Injectable()
 @UseInterceptors(CacheInterceptor)
