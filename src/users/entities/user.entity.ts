@@ -20,7 +20,13 @@ export class UserEntity extends BaseEntity {
   id: number;
 
   @Column()
+  mail: string;
+
+  @Column()
   username: string;
+
+  @Column()
+  password: string;
 
   @Column()
   rank: number;
