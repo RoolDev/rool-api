@@ -11,23 +11,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './entities/user.entity';
-import { CreateUserSSO } from './dto/create-user-sso.dto';
+import { CreateUserSSODTO } from './dto/create-user-sso.dto';
 import { Users } from 'src/auth/entities/users.entity';
 import { IJWTRecoverEmailPayload } from './models/IJWTRecoverEmailPayload';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
 import { RecoverPasswordDTO } from './dto/recover-dto';
-import { ChangePasswordDTO } from './dto/change-password.dto'
+import { ChangePasswordDTO } from './dto/change-password.dto';
 import recoverApi from '../config/api-recover-password';
 
 @Injectable()
 @UseInterceptors(CacheInterceptor)
 export class UsersService {
   constructor(
-    @InjectRepository(UsersRepository) 
+    @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
-    private jwtService: JwtService, 
+    private jwtService: JwtService,
   ) {}
 
   private logger: Logger = new Logger('UsersService');
@@ -57,7 +57,7 @@ export class UsersService {
    */
   async updateUserSSO(
     userDTO: Users,
-    createUserSSO: CreateUserSSO,
+    createUserSSO: CreateUserSSODTO,
   ): Promise<IUpdateUserSSO> {
     const { ip } = createUserSSO;
 
@@ -106,23 +106,21 @@ export class UsersService {
     return result[1] > 0;
   }
 
-  async checkIfEmailExist(
-    recoverPassword: RecoverPasswordDTO,
-  ){
-
+  async checkIfEmailExist(recoverPassword: RecoverPasswordDTO) {
     const mail = await this.usersRepository.getUserMail(recoverPassword.mail);
 
-    if(mail === undefined){
-      throw new NotFoundException('Não foi encontrado nenhum usuário com este email');
+    if (mail === undefined) {
+      throw new NotFoundException(
+        'Não foi encontrado nenhum usuário com este email',
+      );
       return;
     }
 
     try {
       this.recoverPassword(recoverPassword, mail);
-    } catch (err){
+    } catch (err) {
       console.log(err);
     }
-
   }
 
   async getUsersOnline(): Promise<{ usersOnline: number }> {
@@ -133,13 +131,13 @@ export class UsersService {
     };
   }
 
-  async generateJWTPayload(mail: string):Promise<IJWTRecoverEmailPayload>{
+  async generateJWTPayload(mail: string): Promise<IJWTRecoverEmailPayload> {
     return {
       mail,
-    }
+    };
   }
 
-  async generateJWT(payload: IJWTRecoverEmailPayload){
+  async generateJWT(payload: IJWTRecoverEmailPayload) {
     return this.jwtService.sign(payload);
   }
 
@@ -147,13 +145,11 @@ export class UsersService {
     try {
       this.logger.log(`Validating token ${token}`);
 
-      const decoded = await this.jwtService.verifyAsync<IJWTRecoverEmailPayload>(
-        token,
-      );
+      const decoded = await this.jwtService.verifyAsync<
+        IJWTRecoverEmailPayload
+      >(token);
 
-      this.logger.log(
-        `Token valid for email (${decoded.mail})`,
-      );
+      this.logger.log(`Token valid for email (${decoded.mail})`);
 
       return decoded;
     } catch (e) {
@@ -162,11 +158,7 @@ export class UsersService {
     }
   }
 
-  async recoverPassword(
-    recoverPassword: RecoverPasswordDTO,
-    user: UserEntity,
-  ){
-    
+  async recoverPassword(recoverPassword: RecoverPasswordDTO, user: UserEntity) {
     const payload = await this.generateJWTPayload(recoverPassword.mail);
     const token = await this.generateJWT(payload);
     const data = {
@@ -182,31 +174,30 @@ export class UsersService {
         mailto: recoverPassword.mail,
         topic: 'Esqueci minha senha',
         token,
-      }
+      },
     };
 
     try {
       await recoverApi.post('/send', data);
-
-    } catch(err){
-      throw new BadRequestException('Erro ao enviar e-mail. Verifique os dados e tente novamente!');
+    } catch (err) {
+      throw new BadRequestException(
+        'Erro ao enviar e-mail. Verifique os dados e tente novamente!',
+      );
     }
   }
 
-  async changePassword(
-    changePassword: ChangePasswordDTO,
-  ){
+  async changePassword(changePassword: ChangePasswordDTO) {
+    const payload = await this.validateJWT(changePassword.token);
 
-   const payload = await this.validateJWT(changePassword.token);
-
-   try {
+    try {
       await this.usersRepository.changePassword(changePassword, payload.mail);
       return {
-        message: `Senha para o email ${payload.mail}' alterada com sucesso!`
-      }
-   } catch(err){
-    throw new BadRequestException('Falha ao atualizar senha, tente novamente.');
-   }
+        message: `Senha para o email ${payload.mail}' alterada com sucesso!`,
+      };
+    } catch (err) {
+      throw new BadRequestException(
+        'Falha ao atualizar senha, tente novamente.',
+      );
+    }
   }
-
 }

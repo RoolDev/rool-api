@@ -18,7 +18,6 @@ import { Exclude } from 'class-transformer';
 })
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Exclude()
   id: number;
 
   @Exclude()
