@@ -101,7 +101,7 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET_PROD }}" >> .env
             echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE_PROD }}" >> .env
             echo "RECOVER_SERVICE_USER_ID=${{ secrets.RECOVER_SERVICE_USER_ID }}" >> .env
-            echo "RECOVER_SERVICE_TEMPLATE=${{ secrets.RECOVER_SERVICE_TEMPLATE }}" >> .env
-            echo "RECOVER_SERVICE_SERVICE_ID=${{ secrets.RECOVER_SERVICE_SERVICE }}" >> .env
+            echo "RECOVER_SERVICE_TEMPLATE_ID=${{ secrets.RECOVER_SERVICE_TEMPLATE_ID }}" >> .env
+            echo "RECOVER_SERVICE_SERVICE_ID=${{ secrets.RECOVER_SERVICE_SERVICE_ID }}" >> .env
             echo "RE_SECRET=${{ secrets.RE_SECRET_PROD }}" >> .env
             pm2 restart api
