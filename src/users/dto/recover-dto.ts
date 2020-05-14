@@ -13,5 +13,9 @@ export class RecoverPasswordDTO {
     message: 'E-mail não pode conter mais que 64 caracteres.',
   })
   mail: string;
+
+  @IsString()
+  @IsNotEmpty()
+  recaptchaToken: string;
 }
 

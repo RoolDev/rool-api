@@ -14,6 +14,7 @@ import { UserEntity } from './entities/user.entity';
 import { CreateUserSSODTO } from './dto/create-user-sso.dto';
 import { Users } from 'src/auth/entities/users.entity';
 import { IJWTRecoverEmailPayload } from './models/IJWTRecoverEmailPayload';
+import axios from 'axios';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
@@ -106,7 +107,22 @@ export class UsersService {
     return result[1] > 0;
   }
 
+  async validateRecaptchaToken(token: string): Promise<boolean> {
+    this.logger.log(`Validating reCaptcha token ${token}`);
+
+    const { RE_SECRET } = process.env;
+
+    await axios.get(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${RE_SECRET}&response=${token}`,
+    );
+
+    this.logger.log(`${token} is valid.`);
+    return true;
+  }
+
   async checkIfEmailExist(recoverPassword: RecoverPasswordDTO) {
+    await this.validateRecaptchaToken(recoverPassword.recaptchaToken);
+
     const mail = await this.usersRepository.getUserMail(recoverPassword.mail);
 
     if (mail === undefined) {
@@ -161,6 +177,7 @@ export class UsersService {
   async recoverPassword(recoverPassword: RecoverPasswordDTO, user: UserEntity) {
     const payload = await this.generateJWTPayload(recoverPassword.mail);
     const token = await this.generateJWT(payload);
+
     const data = {
       // eslint-disable-next-line @typescript-eslint/camelcase
       service_id: process.env.RECOVER_SERVICE_SERVICE_ID,
@@ -170,6 +187,7 @@ export class UsersService {
       user_id: process.env.RECOVER_SERVICE_USER_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
       template_params: {
+        url: process.env.NODE_ENV === 'development' ? process.env.RECOVER_SERVICE_BASE_URL_DEV : process.env.RECOVER_SERVICE_BASE_URL_PROD, 
         username: user.username,
         mailto: recoverPassword.mail,
         topic: 'Esqueci minha senha',
@@ -179,6 +197,7 @@ export class UsersService {
 
     try {
       await recoverApi.post('/send', data);
+      console.log(data);
     } catch (err) {
       throw new BadRequestException(
         'Erro ao enviar e-mail. Verifique os dados e tente novamente!',
