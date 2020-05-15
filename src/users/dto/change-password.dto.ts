@@ -25,5 +25,9 @@ export class ChangePasswordDTO {
   @IsNotEmpty({ message: 'O token não pode estar vazio.'})
   @IsString()
   token: string;
+
+  @IsString()
+  @IsNotEmpty()
+  recaptchaToken: string;
 }
 

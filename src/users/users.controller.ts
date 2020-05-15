@@ -68,6 +68,7 @@ export class UsersController {
   async recoverPassword(
     @Body(ValidationPipe) recoverPassword: RecoverPasswordDTO,
   ) {
+    await this.usersService.validateRecaptchaToken(recoverPassword.recaptchaToken);
     return this.usersService.checkIfEmailExist(recoverPassword);
   }
 
@@ -75,6 +76,7 @@ export class UsersController {
   async changePassword(
     @Body(ValidationPipe) changePassword: ChangePasswordDTO,
   ) {
+    await this.usersService.validateRecaptchaToken(changePassword.recaptchaToken);
     return this.usersService.changePassword(changePassword);
   }
 }

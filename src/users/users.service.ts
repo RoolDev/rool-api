@@ -197,7 +197,6 @@ export class UsersService {
 
     try {
       await recoverApi.post('/send', data);
-      console.log(data);
     } catch (err) {
       throw new BadRequestException(
         'Erro ao enviar e-mail. Verifique os dados e tente novamente!',
