@@ -31,9 +31,6 @@ export class AuthService {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ accessToken: string }> {
-    // Validating recaptcha request
-    await this.validateRecaptchaToken(createUserDto.recaptchaToken);
-
     this.logger.log(
       `Creating new user '${createUserDto.username}' with ip '${createUserDto.ip}'`,
     );
@@ -54,9 +51,6 @@ export class AuthService {
   }
 
   async signInUser(signInUserDTO: SignInUserDTO): Promise<IUserSignInToken> {
-    // Validate recaptcha token
-    await this.validateRecaptchaToken(signInUserDTO.recaptchaToken);
-
     this.logger.log(`Trying to sign in user: '${signInUserDTO.mail}'.`);
 
     const user = await this.authRepository.signInUser(signInUserDTO);
