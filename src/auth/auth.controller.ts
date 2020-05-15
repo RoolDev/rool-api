@@ -25,11 +25,15 @@ export class AuthController {
    */
   @Post('signup')
   async createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    await this.authService.validateRecaptchaToken(createUserDto.recaptchaToken);
+
     return await this.authService.createUser(createUserDto);
   }
 
   @Post('signin')
   async signInUser(@Body(ValidationPipe) signInUserDTO: SignInUserDTO) {
+    await this.authService.validateRecaptchaToken(signInUserDTO.recaptchaToken);
+
     return this.authService.signInUser(signInUserDTO);
   }
 
