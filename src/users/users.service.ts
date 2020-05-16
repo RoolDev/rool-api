@@ -14,7 +14,6 @@ import { UserEntity } from './entities/user.entity';
 import { CreateUserSSODTO } from './dto/create-user-sso.dto';
 import { Users } from 'src/auth/entities/users.entity';
 import { IJWTRecoverEmailPayload } from './models/IJWTRecoverEmailPayload';
-import axios from 'axios';
 
 import * as uuid from 'uuid';
 import { IUpdateUserSSO } from './models/IUpdateUserSSO';
@@ -107,22 +106,7 @@ export class UsersService {
     return result[1] > 0;
   }
 
-  async validateRecaptchaToken(token: string): Promise<boolean> {
-    this.logger.log(`Validating reCaptcha token ${token}`);
-
-    const { RE_SECRET } = process.env;
-
-    await axios.get(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${RE_SECRET}&response=${token}`,
-    );
-
-    this.logger.log(`${token} is valid.`);
-    return true;
-  }
-
   async checkIfEmailExist(recoverPassword: RecoverPasswordDTO) {
-    await this.validateRecaptchaToken(recoverPassword.recaptchaToken);
-
     const mail = await this.usersRepository.getUserMail(recoverPassword.mail);
 
     if (mail === undefined) {

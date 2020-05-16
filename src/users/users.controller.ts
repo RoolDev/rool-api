@@ -20,6 +20,9 @@ import { Users } from 'src/auth/entities/users.entity';
 import { CreateUserSSODTO } from './dto/create-user-sso.dto';
 import { RecoverPasswordDTO } from './dto/recover-dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
+import validateRecaptchaToken from '../config/validate-recaptcha-token'
+
+
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -68,7 +71,7 @@ export class UsersController {
   async recoverPassword(
     @Body(ValidationPipe) recoverPassword: RecoverPasswordDTO,
   ) {
-    await this.usersService.validateRecaptchaToken(recoverPassword.recaptchaToken);
+    await validateRecaptchaToken(recoverPassword.recaptchaToken);
     return this.usersService.checkIfEmailExist(recoverPassword);
   }
 
@@ -76,7 +79,7 @@ export class UsersController {
   async changePassword(
     @Body(ValidationPipe) changePassword: ChangePasswordDTO,
   ) {
-    await this.usersService.validateRecaptchaToken(changePassword.recaptchaToken);
+    await validateRecaptchaToken(changePassword.recaptchaToken);
     return this.usersService.changePassword(changePassword);
   }
 }
