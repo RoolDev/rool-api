@@ -100,5 +100,9 @@ jobs:
             echo "DB_PORT=${{ secrets.DB_PORT_DEV }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET_DEV }}" >> .env
             echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE_DEV }}" >> .env
+            echo "RECOVER_SERVICE_USER_ID=${{ secrets.RECOVER_SERVICE_USER_ID }}" >> .env
+            echo "RECOVER_SERVICE_TEMPLATE_ID=${{ secrets.RECOVER_SERVICE_TEMPLATE_ID }}" >> .env
+            echo "RECOVER_SERVICE_SERVICE_ID=${{ secrets.RECOVER_SERVICE_SERVICE_ID }}" >> .env
+            echo "RECOVER_SERVICE_BASE_URL=${{ secrets.RECOVER_SERVICE_BASE_URL_DEV }}" >> .env
             echo "RE_SECRET=${{ secrets.RE_SECRET_DEV }}" >> .env
             pm2 restart api

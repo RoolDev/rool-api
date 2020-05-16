@@ -11,6 +11,7 @@ import {
  */
 import { UserCurrencyEntity } from './user-currency.entity';
 import { UserBadgeEntity } from './user-badge.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({
   name: 'users',
@@ -19,8 +20,16 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Exclude()
+  @Column()
+  mail: string;
+
   @Column()
   username: string;
+
+  @Exclude()
+  @Column()
+  password: string;
 
   @Column()
   rank: number;

@@ -17,7 +17,11 @@ import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Users } from 'src/auth/entities/users.entity';
-import { CreateUserSSO } from './dto/create-user-sso.dto';
+import { CreateUserSSODTO } from './dto/create-user-sso.dto';
+import { RecoverPasswordDTO } from './dto/recover-dto';
+import { ChangePasswordDTO } from './dto/change-password.dto';
+import validateRecaptchaToken from '../config/validate-recaptcha-token'
+
 
 @Controller('users')
 export class UsersController {
@@ -52,7 +56,7 @@ export class UsersController {
   getUserSSO(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: Users,
-    @Body(ValidationPipe) createUserSSO: CreateUserSSO,
+    @Body(ValidationPipe) createUserSSO: CreateUserSSODTO,
   ) {
     if (!user.isAdmin && id !== user.id) {
       throw new UnauthorizedException(
@@ -61,5 +65,21 @@ export class UsersController {
     }
 
     return this.usersService.updateUserSSO(user, createUserSSO);
+  }
+
+  @Post('/recover')
+  async recoverPassword(
+    @Body(ValidationPipe) recoverPassword: RecoverPasswordDTO,
+  ) {
+    await validateRecaptchaToken(recoverPassword.recaptchaToken);
+    return this.usersService.checkIfEmailExist(recoverPassword);
+  }
+
+  @Post('/recover/changePassword')
+  async changePassword(
+    @Body(ValidationPipe) changePassword: ChangePasswordDTO,
+  ) {
+    await validateRecaptchaToken(changePassword.recaptchaToken);
+    return this.usersService.changePassword(changePassword);
   }
 }
