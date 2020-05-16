@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { SignInUserDTO } from './dto/signin-user.dto';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
 import { Request } from 'express';
+import validateRecaptchaToken from '../config/validate-recaptcha-token';
 
 @Controller('auth')
 export class AuthController {
@@ -25,11 +26,13 @@ export class AuthController {
    */
   @Post('signup')
   async createUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    await validateRecaptchaToken(createUserDto.recaptchaToken);
     return await this.authService.createUser(createUserDto);
   }
 
   @Post('signin')
   async signInUser(@Body(ValidationPipe) signInUserDTO: SignInUserDTO) {
+    await validateRecaptchaToken(signInUserDTO.recaptchaToken);
     return this.authService.signInUser(signInUserDTO);
   }
 

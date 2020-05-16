@@ -11,7 +11,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './entities/users.entity';
 import { ValidateTokenDTO } from './dto/validate-token.dto';
 import { Request } from 'express';
-import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -31,9 +30,6 @@ export class AuthService {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<{ accessToken: string }> {
-    // Validating recaptcha request
-    await this.validateRecaptchaToken(createUserDto.recaptchaToken);
-
     this.logger.log(
       `Creating new user '${createUserDto.username}' with ip '${createUserDto.ip}'`,
     );
@@ -54,9 +50,6 @@ export class AuthService {
   }
 
   async signInUser(signInUserDTO: SignInUserDTO): Promise<IUserSignInToken> {
-    // Validate recaptcha token
-    await this.validateRecaptchaToken(signInUserDTO.recaptchaToken);
-
     this.logger.log(`Trying to sign in user: '${signInUserDTO.mail}'.`);
 
     const user = await this.authRepository.signInUser(signInUserDTO);
@@ -113,18 +106,5 @@ export class AuthService {
       request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
     return { ip };
-  }
-
-  async validateRecaptchaToken(token: string): Promise<boolean> {
-    this.logger.log(`Validating reCaptcha token ${token}`);
-
-    const { RE_SECRET } = process.env;
-
-    await axios.get(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${RE_SECRET}&response=${token}`,
-    );
-
-    this.logger.log(`${token} is valid.`);
-    return true;
   }
 }
