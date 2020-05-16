@@ -171,7 +171,7 @@ export class UsersService {
       user_id: process.env.RECOVER_SERVICE_USER_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
       template_params: {
-        url: process.env.NODE_ENV === 'development' ? process.env.RECOVER_SERVICE_BASE_URL_DEV : process.env.RECOVER_SERVICE_BASE_URL_PROD, 
+        url: process.env.RECOVER_SERVICE_BASE_URL, 
         username: user.username,
         mailto: recoverPassword.mail,
         topic: 'Esqueci minha senha',
