@@ -161,6 +161,7 @@ export class UsersService {
   async recoverPassword(recoverPassword: RecoverPasswordDTO, user: UserEntity) {
     const payload = await this.generateJWTPayload(recoverPassword.mail);
     const token = await this.generateJWT(payload);
+
     const data = {
       // eslint-disable-next-line @typescript-eslint/camelcase
       service_id: process.env.RECOVER_SERVICE_SERVICE_ID,
@@ -170,6 +171,7 @@ export class UsersService {
       user_id: process.env.RECOVER_SERVICE_USER_ID,
       // eslint-disable-next-line @typescript-eslint/camelcase
       template_params: {
+        url: process.env.RECOVER_SERVICE_BASE_URL, 
         username: user.username,
         mailto: recoverPassword.mail,
         topic: 'Esqueci minha senha',
